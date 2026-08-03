@@ -6,13 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Vendas</title>
 
+    <!-- Google Fonts Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
     <!-- CSS principal -->
     <link rel="stylesheet" href="style.css">
 
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <!-- Chart.js para gráficos estilo Power BI -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -20,13 +23,12 @@
 
 <div class="container">
 
-    <!-- ========== SIDEBAR ========== -->
+    <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="logo">
             <h2>VENDAS</h2>
             <span>Dashboard</span>
         </div>
-
         <nav>
             <ul>
                 <li class="active" data-action="dashboard">
@@ -53,51 +55,50 @@
         </nav>
     </aside>
 
-    <!-- ========== MAIN ========== -->
+    <!-- MAIN -->
     <main class="content">
 
-        <!-- HEADER -->
         <header>
             <div>
-                <h1>Controle de Vendas</h1>
+                <h1>📊 Controle de Vendas</h1>
                 <p>Sistema de Gestão Comercial</p>
             </div>
         </header>
 
-        <!-- CARDS (resumo) -->
+        <!-- CARDS -->
         <section class="cards">
             <div class="card">
-                <h3>Total Vendido</h3>
+                <h3>💰 Total Vendido</h3>
                 <span id="totalVendido">R$ 0,00</span>
             </div>
             <div class="card">
-                <h3>Quantidade de Vendas</h3>
+                <h3>📦 Quantidade de Vendas</h3>
                 <span id="qtdeVendas">0</span>
             </div>
             <div class="card">
-                <h3>Ticket Médio</h3>
+                <h3>🎯 Ticket Médio</h3>
                 <span id="ticketMedio">R$ 0,00</span>
             </div>
         </section>
 
-        <!-- GRÁFICO (estilo Power BI) -->
-        <section class="panel" style="margin-top:20px;">
+        <!-- GRÁFICO -->
+        <section class="panel">
             <div class="panel-title">
-                <h2>Vendas por Mês</h2>
+                <h2>📈 Vendas por Mês</h2>
             </div>
-            <canvas id="graficoVendas" height="100"></canvas>
+            <canvas id="graficoVendas" height="120"></canvas>
         </section>
 
-        <!-- TABELA DE PRODUTOS -->
-        <section class="panel" style="margin-top:20px;">
+        <!-- TABELA PRODUTOS -->
+        <section class="panel">
             <div class="panel-title">
-                <h2>Produtos Cadastrados</h2>
+                <h2>📋 Produtos Cadastrados</h2>
                 <div>
-                    <button onclick="abrirModalProduto()" style="margin-right:10px;">
-                        Novo Produto
+                    <button onclick="abrirModalProduto()">
+                        <span class="material-icons" style="font-size:18px;">add</span> Novo
                     </button>
-                    <button onclick="carregarTabelaProdutos()">
-                        Atualizar
+                    <button onclick="carregarTabelaProdutos()" style="margin-left:8px;">
+                        <span class="material-icons" style="font-size:18px;">refresh</span> Atualizar
                     </button>
                 </div>
             </div>
@@ -111,7 +112,7 @@
                     </tr>
                 </thead>
                 <tbody id="tbProdutos">
-                    <!-- preenchido via JavaScript -->
+                    <!-- preenchido via JS -->
                 </tbody>
             </table>
         </section>
@@ -119,17 +120,11 @@
     </main>
 </div>
 
-<!-- ============================================================
-     SCRIPTS (API + APP)
-     ============================================================ -->
+<!-- ==================== SCRIPTS ==================== -->
 
-<!-- api.js – comunicação com o backend -->
+<!-- api.js e app.js embutidos para simplificar -->
 <script>
-    // =====================================================
-    // API.JS
-    // =====================================================
-
-    // Substitua pela URL do seu Web App implantado
+    // ========== API.JS ==========
     const API_URL = 'https://script.google.com/macros/s/AKfycbwxSuwh7_bROneK8DLSc0c5vE94CtZXfnoUf6PdMapyMRLoUh47JUlSMpwAUT_fASLg/exec';
 
     async function apiGet(action) {
@@ -150,8 +145,6 @@
         const json = await resp.json();
         return json;
     }
-
-    // --- Funções específicas ---
 
     async function carregarProdutos() {
         const result = await apiGet('produtos');
@@ -196,26 +189,19 @@
     }
 </script>
 
-<!-- app.js – lógica da interface -->
 <script>
-    // =====================================================
-    // APP.JS
-    // =====================================================
-
-    // Elementos DOM
+    // ========== APP.JS ==========
     const tbProdutos = document.getElementById('tbProdutos');
     const totalVendidoEl = document.getElementById('totalVendido');
     const qtdeVendasEl = document.getElementById('qtdeVendas');
     const ticketMedioEl = document.getElementById('ticketMedio');
 
-    // --- Inicialização ---
     document.addEventListener('DOMContentLoaded', async () => {
         await atualizarDashboard();
         await carregarGrafico();
         configurarMenu();
     });
 
-    // --- Atualiza tudo ---
     async function atualizarDashboard() {
         await Promise.all([
             carregarTabelaProdutos(),
@@ -223,18 +209,17 @@
         ]);
     }
 
-    // --- Tabela Produtos ---
     async function carregarTabelaProdutos() {
         const produtos = await carregarProdutos();
         tbProdutos.innerHTML = '';
         if (produtos.length === 0) {
-            tbProdutos.innerHTML = '<tr><td colspan="3">Nenhum produto cadastrado</td></tr>';
+            tbProdutos.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#94a3b8; padding:30px;">Nenhum produto cadastrado</td></tr>';
             return;
         }
         produtos.forEach(p => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${p.codigo}</td>
+                <td><strong>${p.codigo}</strong></td>
                 <td>${p.descricao}</td>
                 <td>R$ ${Number(p.valor).toFixed(2)}</td>
             `;
@@ -242,7 +227,6 @@
         });
     }
 
-    // --- Cards de resumo ---
     async function atualizarCards() {
         const resumo = await carregarResumo();
         totalVendidoEl.textContent = `R$ ${resumo.totalVendido.toFixed(2)}`;
@@ -250,14 +234,12 @@
         ticketMedioEl.textContent = `R$ ${resumo.ticketMedio.toFixed(2)}`;
     }
 
-    // --- Gráfico (Chart.js) ---
     async function carregarGrafico() {
         const vendas = await carregarVendas();
-        // Agrupa por mês (YYYY-MM)
         const meses = {};
         vendas.forEach(v => {
             if (v.data) {
-                const mes = v.data.substring(0, 7); // "2025-03"
+                const mes = v.data.substring(0, 7);
                 meses[mes] = (meses[mes] || 0) + v.total;
             }
         });
@@ -272,8 +254,8 @@
                 datasets: [{
                     label: 'Total Vendido (R$)',
                     data: dados,
-                    backgroundColor: '#1976d2',
-                    borderRadius: 6
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 8,
                 }]
             },
             options: {
@@ -293,7 +275,7 @@
         });
     }
 
-    // --- Modal para Novo Produto (usando prompt simples) ---
+    // ===== FUNÇÕES DOS BOTÕES =====
     window.abrirModalProduto = function() {
         const codigo = prompt('Código do produto (deixe em branco para novo):');
         const descricao = prompt('Descrição:');
@@ -308,7 +290,6 @@
         }
     };
 
-    // --- Modal para Nova Venda ---
     window.abrirModalVenda = async function() {
         const clientes = await carregarClientes();
         if (clientes.length === 0) {
@@ -342,18 +323,16 @@
         if (result.success) {
             alert(`Venda registrada! Total: R$ ${result.data.total.toFixed(2)}`);
             await atualizarDashboard();
-            await carregarGrafico(); // recarrega o gráfico
+            await carregarGrafico();
         } else {
             alert('Erro: ' + result.message);
         }
     };
 
-    // --- Configuração dos cliques no menu lateral ---
     function configurarMenu() {
         const menuItems = document.querySelectorAll('.sidebar li');
         menuItems.forEach(item => {
             item.addEventListener('click', function() {
-                // Remove active de todos
                 menuItems.forEach(li => li.classList.remove('active'));
                 this.classList.add('active');
 
@@ -366,12 +345,10 @@
                         abrirModalVenda();
                         break;
                     case 'dashboard':
-                        // apenas recarrega os dados
                         atualizarDashboard();
                         carregarGrafico();
                         break;
                     case 'clientes':
-                        // futuramente abrir modal de clientes
                         alert('Funcionalidade de clientes em breve.');
                         break;
                     case 'relatorios':
