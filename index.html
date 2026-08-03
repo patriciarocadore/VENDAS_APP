@@ -1,382 +1,172 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Vendas</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Vendas · Power Dashboard</title>
 
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- CSS principal -->
-    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
 
     <!-- Material Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
 
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="style.css" />
+</head>
 <body>
 
-<div class="container">
+    <div class="app">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="logo">
-            <h2>⚡ VENDAS</h2>
-            <span>dashboard</span>
-        </div>
-        <nav>
-            <ul>
-                <li class="active" data-action="dashboard">
-                    <span class="material-icons">dashboard</span>
-                    Dashboard
-                </li>
-                <li data-action="produtos">
-                    <span class="material-icons">inventory_2</span>
-                    Produtos
-                </li>
-                <li data-action="clientes">
-                    <span class="material-icons">groups</span>
-                    Clientes
-                </li>
-                <li data-action="novaVenda">
-                    <span class="material-icons">shopping_cart</span>
-                    Nova Venda
-                </li>
-                <li data-action="relatorios">
-                    <span class="material-icons">description</span>
-                    Relatórios
-                </li>
-            </ul>
-        </nav>
-    </aside>
-
-    <!-- MAIN CONTENT -->
-    <main class="content">
-
-        <header>
-            <div>
-                <h1>📊 Controle de Vendas</h1>
-                <p>Sistema de Gestão Comercial</p>
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="material-icons">analytics</span>
+                <h2>VENDAS</h2>
+                <small>dashboard</small>
             </div>
-        </header>
 
-        <!-- CARDS -->
-        <section class="cards">
-            <div class="card">
-                <span class="icon material-icons">attach_money</span>
-                <h3>Total Vendido</h3>
-                <span id="totalVendido">R$ 0,00</span>
-            </div>
-            <div class="card">
-                <span class="icon material-icons">shopping_bag</span>
-                <h3>Quantidade de Vendas</h3>
-                <span id="qtdeVendas">0</span>
-            </div>
-            <div class="card">
-                <span class="icon material-icons">trending_up</span>
-                <h3>Ticket Médio</h3>
-                <span id="ticketMedio">R$ 0,00</span>
-            </div>
-        </section>
+            <nav>
+                <ul>
+                    <li class="active" data-action="dashboard">
+                        <span class="material-icons">dashboard</span>
+                        Dashboard
+                    </li>
+                    <li data-action="produtos">
+                        <span class="material-icons">inventory_2</span>
+                        Produtos
+                    </li>
+                    <li data-action="clientes">
+                        <span class="material-icons">groups</span>
+                        Clientes
+                    </li>
+                    <li data-action="novaVenda">
+                        <span class="material-icons">shopping_cart</span>
+                        Nova Venda
+                    </li>
+                    <li data-action="relatorios">
+                        <span class="material-icons">description</span>
+                        Relatórios
+                    </li>
+                </ul>
+            </nav>
 
-        <!-- GRÁFICO -->
-        <section class="panel">
-            <div class="panel-title">
-                <h2>📈 Vendas por Mês</h2>
+            <div class="sidebar-footer">
+                <span class="material-icons">settings</span>
+                <span>Configurações</span>
             </div>
-            <canvas id="graficoVendas" height="120"></canvas>
-        </section>
+        </aside>
 
-        <!-- TABELA PRODUTOS -->
-        <section class="panel">
-            <div class="panel-title">
-                <h2>📋 Produtos Cadastrados</h2>
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main">
+
+            <!-- HEADER -->
+            <header class="topbar">
                 <div>
-                    <button onclick="abrirModalProduto()">
-                        <span class="material-icons">add</span> Novo
-                    </button>
-                    <button onclick="carregarTabelaProdutos()" style="margin-left:8px;">
-                        <span class="material-icons">refresh</span> Atualizar
-                    </button>
+                    <h1>Controle de Vendas</h1>
+                    <p>Sistema de Gestão Comercial</p>
                 </div>
-            </div>
+                <div class="topbar-actions">
+                    <button class="btn-outline" onclick="window.location.reload()">
+                        <span class="material-icons">refresh</span>
+                        Atualizar
+                    </button>
+                    <div class="avatar">JD</div>
+                </div>
+            </header>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Código</th>
-                        <th>Descrição</th>
-                        <th>Valor</th>
-                    </tr>
-                </thead>
-                <tbody id="tbProdutos">
-                    <!-- preenchido via JS -->
-                </tbody>
-            </table>
-        </section>
+            <!-- CARDS (KPI) -->
+            <section class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:#e0f2fe; color:#0284c7;">
+                        <span class="material-icons">attach_money</span>
+                    </div>
+                    <div>
+                        <span class="kpi-label">Total Vendido</span>
+                        <span class="kpi-value" id="totalVendido">R$ 0,00</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:#fce7f3; color:#db2777;">
+                        <span class="material-icons">receipt_long</span>
+                    </div>
+                    <div>
+                        <span class="kpi-label">Quantidade de Vendas</span>
+                        <span class="kpi-value" id="qtdeVendas">0</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:#fef3c7; color:#d97706;">
+                        <span class="material-icons">trending_up</span>
+                    </div>
+                    <div>
+                        <span class="kpi-label">Ticket Médio</span>
+                        <span class="kpi-value" id="ticketMedio">R$ 0,00</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:#d1fae5; color:#059669;">
+                        <span class="material-icons">check_circle</span>
+                    </div>
+                    <div>
+                        <span class="kpi-label">Produtos Ativos</span>
+                        <span class="kpi-value" id="produtosAtivos">0</span>
+                    </div>
+                </div>
+            </section>
 
-    </main>
-</div>
+            <!-- GRÁFICO + TABELA (layout duas colunas) -->
+            <section class="dashboard-grid">
 
-<!-- ==================== SCRIPTS ==================== -->
+                <!-- GRÁFICO -->
+                <div class="panel chart-panel">
+                    <div class="panel-header">
+                        <h2><span class="material-icons">bar_chart</span> Vendas por Mês</h2>
+                    </div>
+                    <canvas id="graficoVendas" height="180"></canvas>
+                </div>
 
-<script>
-    // ========== API.JS ==========
-    const API_URL = 'https://script.google.com/macros/s/AKfycbwxSuwh7_bROneK8DLSc0c5vE94CtZXfnoUf6PdMapyMRLoUh47JUlSMpwAUT_fASLg/exec';
+                <!-- TABELA DE PRODUTOS -->
+                <div class="panel table-panel">
+                    <div class="panel-header">
+                        <h2><span class="material-icons">inventory</span> Produtos</h2>
+                        <div>
+                            <button class="btn-primary" onclick="abrirModalProduto()">
+                                <span class="material-icons">add</span> Novo
+                            </button>
+                            <button class="btn-outline" onclick="carregarTabelaProdutos()">
+                                <span class="material-icons">refresh</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Descrição</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbProdutos">
+                                <!-- JS preenche -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-    async function apiGet(action) {
-        const url = `${API_URL}?action=${action}`;
-        const resp = await fetch(url);
-        const json = await resp.json();
-        return json;
-    }
+            </section>
 
-    async function apiPost(action, data) {
-        const url = `${API_URL}?action=${action}`;
-        const resp = await fetch(url, {
-            method: 'POST',
-            mode: 'cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        const json = await resp.json();
-        return json;
-    }
+        </main>
+    </div>
 
-    async function carregarProdutos() {
-        const result = await apiGet('produtos');
-        if (result.success) return result.data;
-        alert('Erro ao carregar produtos: ' + result.message);
-        return [];
-    }
-
-    async function carregarClientes() {
-        const result = await apiGet('clientes');
-        if (result.success) return result.data;
-        alert('Erro ao carregar clientes: ' + result.message);
-        return [];
-    }
-
-    async function carregarVendas() {
-        const result = await apiGet('vendas');
-        if (result.success) return result.data;
-        return [];
-    }
-
-    async function carregarResumo() {
-        const result = await apiGet('resumo');
-        if (result.success) return result.data;
-        console.error('Erro no resumo:', result.message);
-        return { totalVendido: 0, qtdeVendas: 0, ticketMedio: 0 };
-    }
-
-    async function salvarProduto(produto) {
-        const result = await apiPost('salvarProduto', produto);
-        return result;
-    }
-
-    async function salvarCliente(cliente) {
-        const result = await apiPost('salvarCliente', cliente);
-        return result;
-    }
-
-    async function registrarVenda(venda) {
-        const result = await apiPost('registrarVenda', venda);
-        return result;
-    }
-</script>
-
-<script>
-    // ========== APP.JS ==========
-    const tbProdutos = document.getElementById('tbProdutos');
-    const totalVendidoEl = document.getElementById('totalVendido');
-    const qtdeVendasEl = document.getElementById('qtdeVendas');
-    const ticketMedioEl = document.getElementById('ticketMedio');
-
-    document.addEventListener('DOMContentLoaded', async () => {
-        await atualizarDashboard();
-        await carregarGrafico();
-        configurarMenu();
-    });
-
-    async function atualizarDashboard() {
-        await Promise.all([
-            carregarTabelaProdutos(),
-            atualizarCards()
-        ]);
-    }
-
-    async function carregarTabelaProdutos() {
-        const produtos = await carregarProdutos();
-        tbProdutos.innerHTML = '';
-        if (produtos.length === 0) {
-            tbProdutos.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#64748b; padding:30px;">Nenhum produto cadastrado</td></tr>';
-            return;
-        }
-        produtos.forEach(p => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><strong>${p.codigo}</strong></td>
-                <td>${p.descricao}</td>
-                <td>R$ ${Number(p.valor).toFixed(2)}</td>
-            `;
-            tbProdutos.appendChild(tr);
-        });
-    }
-
-    async function atualizarCards() {
-        const resumo = await carregarResumo();
-        totalVendidoEl.textContent = `R$ ${resumo.totalVendido.toFixed(2)}`;
-        qtdeVendasEl.textContent = resumo.qtdeVendas;
-        ticketMedioEl.textContent = `R$ ${resumo.ticketMedio.toFixed(2)}`;
-    }
-
-    async function carregarGrafico() {
-        const vendas = await carregarVendas();
-        const meses = {};
-        vendas.forEach(v => {
-            if (v.data) {
-                const mes = v.data.substring(0, 7);
-                meses[mes] = (meses[mes] || 0) + v.total;
-            }
-        });
-        const labels = Object.keys(meses).sort();
-        const dados = labels.map(m => meses[m]);
-
-        const ctx = document.getElementById('graficoVendas').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Total Vendido (R$)',
-                    data: dados,
-                    backgroundColor: 'rgba(0, 240, 255, 0.7)',
-                    borderColor: '#00f0ff',
-                    borderWidth: 1,
-                    borderRadius: 6,
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: value => 'R$ ' + value.toFixed(2),
-                            color: '#94a3b8'
-                        },
-                        grid: {
-                            color: 'rgba(255,255,255,0.04)'
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            color: '#94a3b8'
-                        },
-                        grid: {
-                            color: 'rgba(255,255,255,0.04)'
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    // ===== FUNÇÕES DOS BOTÕES =====
-    window.abrirModalProduto = function() {
-        const codigo = prompt('Código do produto (deixe em branco para novo):');
-        const descricao = prompt('Descrição:');
-        const valor = prompt('Valor (ex: 19.90):');
-        if (descricao && valor) {
-            salvarProduto({ codigo: codigo || '', descricao, valor: parseFloat(valor) })
-                .then(result => {
-                    alert(result.data.mensagem || 'Produto salvo');
-                    carregarTabelaProdutos();
-                })
-                .catch(err => alert('Erro: ' + err));
-        }
-    };
-
-    window.abrirModalVenda = async function() {
-        const clientes = await carregarClientes();
-        if (clientes.length === 0) {
-            alert('Cadastre clientes primeiro.');
-            return;
-        }
-        const cliente = prompt('Digite o código do cliente (ex: CLT-001):');
-        if (!cliente) return;
-
-        const itens = [];
-        let continuar = true;
-        while (continuar) {
-            const codProd = prompt('Código do produto (ou cancelar para finalizar):');
-            if (!codProd) break;
-            const qtd = parseInt(prompt('Quantidade:'), 10);
-            if (isNaN(qtd) || qtd <= 0) {
-                alert('Quantidade inválida.');
-                continue;
-            }
-            itens.push({ codigoProduto: codProd, quantidade: qtd });
-            continuar = confirm('Adicionar mais um item?');
-        }
-
-        if (itens.length === 0) {
-            alert('Venda sem itens.');
-            return;
-        }
-
-        const venda = { cliente, itens };
-        const result = await registrarVenda(venda);
-        if (result.success) {
-            alert(`Venda registrada! Total: R$ ${result.data.total.toFixed(2)}`);
-            await atualizarDashboard();
-            await carregarGrafico();
-        } else {
-            alert('Erro: ' + result.message);
-        }
-    };
-
-    function configurarMenu() {
-        const menuItems = document.querySelectorAll('.sidebar li');
-        menuItems.forEach(item => {
-            item.addEventListener('click', function() {
-                menuItems.forEach(li => li.classList.remove('active'));
-                this.classList.add('active');
-
-                const action = this.dataset.action;
-                switch (action) {
-                    case 'produtos':
-                        abrirModalProduto();
-                        break;
-                    case 'novaVenda':
-                        abrirModalVenda();
-                        break;
-                    case 'dashboard':
-                        atualizarDashboard();
-                        carregarGrafico();
-                        break;
-                    case 'clientes':
-                        alert('Funcionalidade de clientes em breve.');
-                        break;
-                    case 'relatorios':
-                        alert('Relatórios em desenvolvimento.');
-                        break;
-                    default:
-                        break;
-                }
-            });
-        });
-    }
-</script>
-
+    <!-- SCRIPTS -->
+    <script src="api.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
