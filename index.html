@@ -2,144 +2,121 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Vendas · Power Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>⚡ VENDAS DASH</title>
 
     <!-- Google Fonts (Inter) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- CSS principal -->
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-    <div class="app">
+    <div class="app-container">
 
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-            <div class="logo">
-                <span class="material-icons">analytics</span>
+        <!-- ========== SIDEBAR (flutuante com glass) ========== -->
+        <aside class="sidebar-glass">
+            <div class="logo-neon">
+                <span class="material-icons">bolt</span>
                 <h2>VENDAS</h2>
-                <small>dashboard</small>
+                <span class="badge">DASH</span>
             </div>
-
-            <nav>
+            <nav class="menu-nav">
                 <ul>
                     <li class="active" data-action="dashboard">
                         <span class="material-icons">dashboard</span>
-                        Dashboard
+                        <span>Dashboard</span>
                     </li>
                     <li data-action="produtos">
                         <span class="material-icons">inventory_2</span>
-                        Produtos
+                        <span>Produtos</span>
                     </li>
                     <li data-action="clientes">
                         <span class="material-icons">groups</span>
-                        Clientes
+                        <span>Clientes</span>
                     </li>
                     <li data-action="novaVenda">
                         <span class="material-icons">shopping_cart</span>
-                        Nova Venda
+                        <span>Nova Venda</span>
                     </li>
                     <li data-action="relatorios">
                         <span class="material-icons">description</span>
-                        Relatórios
+                        <span>Relatórios</span>
                     </li>
                 </ul>
             </nav>
-
             <div class="sidebar-footer">
                 <span class="material-icons">settings</span>
-                <span>Configurações</span>
+                <span class="version">v2.0</span>
             </div>
         </aside>
 
-        <!-- CONTEÚDO PRINCIPAL -->
-        <main class="main">
+        <!-- ========== MAIN CONTENT ========== -->
+        <main class="main-content">
 
-            <!-- HEADER -->
-            <header class="topbar">
+            <!-- HEADER com gradiente -->
+            <header class="header-glow">
                 <div>
-                    <h1>Controle de Vendas</h1>
-                    <p>Sistema de Gestão Comercial</p>
+                    <h1>📊 <span class="highlight">Controle</span> de Vendas</h1>
+                    <p class="subtitle">Sistema de Gestão Comercial • <span id="dataAtual"></span></p>
                 </div>
-                <div class="topbar-actions">
-                    <button class="btn-outline" onclick="window.location.reload()">
-                        <span class="material-icons">refresh</span>
-                        Atualizar
+                <div class="header-actions">
+                    <button class="btn-glow" onclick="abrirModalVenda()">
+                        <span class="material-icons">add</span> Nova Venda
                     </button>
-                    <div class="avatar">JD</div>
                 </div>
             </header>
 
-            <!-- CARDS (KPI) -->
-            <section class="kpi-grid">
-                <div class="kpi-card">
-                    <div class="kpi-icon" style="background:#e0f2fe; color:#0284c7;">
-                        <span class="material-icons">attach_money</span>
-                    </div>
+            <!-- CARDS (com gradiente neon) -->
+            <section class="cards-grid">
+                <div class="card-neon card-total">
+                    <div class="card-icon"><span class="material-icons">attach_money</span></div>
                     <div>
-                        <span class="kpi-label">Total Vendido</span>
-                        <span class="kpi-value" id="totalVendido">R$ 0,00</span>
+                        <h3>Total Vendido</h3>
+                        <span id="totalVendido" class="valor">R$ 0,00</span>
                     </div>
                 </div>
-                <div class="kpi-card">
-                    <div class="kpi-icon" style="background:#fce7f3; color:#db2777;">
-                        <span class="material-icons">receipt_long</span>
-                    </div>
+                <div class="card-neon card-qtd">
+                    <div class="card-icon"><span class="material-icons">shopping_bag</span></div>
                     <div>
-                        <span class="kpi-label">Quantidade de Vendas</span>
-                        <span class="kpi-value" id="qtdeVendas">0</span>
+                        <h3>Quantidade de Vendas</h3>
+                        <span id="qtdeVendas" class="valor">0</span>
                     </div>
                 </div>
-                <div class="kpi-card">
-                    <div class="kpi-icon" style="background:#fef3c7; color:#d97706;">
-                        <span class="material-icons">trending_up</span>
-                    </div>
+                <div class="card-neon card-ticket">
+                    <div class="card-icon"><span class="material-icons">trending_up</span></div>
                     <div>
-                        <span class="kpi-label">Ticket Médio</span>
-                        <span class="kpi-value" id="ticketMedio">R$ 0,00</span>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-icon" style="background:#d1fae5; color:#059669;">
-                        <span class="material-icons">check_circle</span>
-                    </div>
-                    <div>
-                        <span class="kpi-label">Produtos Ativos</span>
-                        <span class="kpi-value" id="produtosAtivos">0</span>
+                        <h3>Ticket Médio</h3>
+                        <span id="ticketMedio" class="valor">R$ 0,00</span>
                     </div>
                 </div>
             </section>
 
-            <!-- GRÁFICO + TABELA (layout duas colunas) -->
+            <!-- GRÁFICO + TABELA em grid 2 colunas -->
             <section class="dashboard-grid">
-
-                <!-- GRÁFICO -->
-                <div class="panel chart-panel">
+                <!-- Gráfico -->
+                <div class="panel-glass">
                     <div class="panel-header">
-                        <h2><span class="material-icons">bar_chart</span> Vendas por Mês</h2>
+                        <h2><span class="material-icons">show_chart</span> Vendas por Mês</h2>
                     </div>
-                    <canvas id="graficoVendas" height="180"></canvas>
+                    <div class="chart-wrapper">
+                        <canvas id="graficoVendas"></canvas>
+                    </div>
                 </div>
 
-                <!-- TABELA DE PRODUTOS -->
-                <div class="panel table-panel">
+                <!-- Tabela de Produtos -->
+                <div class="panel-glass">
                     <div class="panel-header">
-                        <h2><span class="material-icons">inventory</span> Produtos</h2>
+                        <h2><span class="material-icons">list_alt</span> Produtos</h2>
                         <div>
-                            <button class="btn-primary" onclick="abrirModalProduto()">
+                            <button class="btn-small-glow" onclick="abrirModalProduto()">
                                 <span class="material-icons">add</span> Novo
                             </button>
-                            <button class="btn-outline" onclick="carregarTabelaProdutos()">
+                            <button class="btn-small-glow" onclick="carregarTabelaProdutos()">
                                 <span class="material-icons">refresh</span>
                             </button>
                         </div>
@@ -154,19 +131,17 @@
                                 </tr>
                             </thead>
                             <tbody id="tbProdutos">
-                                <!-- JS preenche -->
+                                <!-- preenchido via JS -->
                             </tbody>
                         </table>
                     </div>
                 </div>
-
             </section>
 
         </main>
     </div>
 
-    <!-- SCRIPTS -->
-    <script src="api.js"></script>
-    <script src="app.js"></script>
+    <!-- ========== SCRIPTS ========== -->
+    <script src="script.js"></script>
 </body>
 </html>
