@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Vendas</title>
 
-    <!-- Google Fonts Roboto -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
     <!-- CSS principal -->
     <link rel="stylesheet" href="style.css">
@@ -26,8 +26,8 @@
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="logo">
-            <h2>VENDAS</h2>
-            <span>Dashboard</span>
+            <h2>⚡ VENDAS</h2>
+            <span>dashboard</span>
         </div>
         <nav>
             <ul>
@@ -55,7 +55,7 @@
         </nav>
     </aside>
 
-    <!-- MAIN -->
+    <!-- MAIN CONTENT -->
     <main class="content">
 
         <header>
@@ -68,15 +68,18 @@
         <!-- CARDS -->
         <section class="cards">
             <div class="card">
-                <h3>💰 Total Vendido</h3>
+                <span class="icon material-icons">attach_money</span>
+                <h3>Total Vendido</h3>
                 <span id="totalVendido">R$ 0,00</span>
             </div>
             <div class="card">
-                <h3>📦 Quantidade de Vendas</h3>
+                <span class="icon material-icons">shopping_bag</span>
+                <h3>Quantidade de Vendas</h3>
                 <span id="qtdeVendas">0</span>
             </div>
             <div class="card">
-                <h3>🎯 Ticket Médio</h3>
+                <span class="icon material-icons">trending_up</span>
+                <h3>Ticket Médio</h3>
                 <span id="ticketMedio">R$ 0,00</span>
             </div>
         </section>
@@ -95,10 +98,10 @@
                 <h2>📋 Produtos Cadastrados</h2>
                 <div>
                     <button onclick="abrirModalProduto()">
-                        <span class="material-icons" style="font-size:18px;">add</span> Novo
+                        <span class="material-icons">add</span> Novo
                     </button>
                     <button onclick="carregarTabelaProdutos()" style="margin-left:8px;">
-                        <span class="material-icons" style="font-size:18px;">refresh</span> Atualizar
+                        <span class="material-icons">refresh</span> Atualizar
                     </button>
                 </div>
             </div>
@@ -122,7 +125,6 @@
 
 <!-- ==================== SCRIPTS ==================== -->
 
-<!-- api.js e app.js embutidos para simplificar -->
 <script>
     // ========== API.JS ==========
     const API_URL = 'https://script.google.com/macros/s/AKfycbwxSuwh7_bROneK8DLSc0c5vE94CtZXfnoUf6PdMapyMRLoUh47JUlSMpwAUT_fASLg/exec';
@@ -213,7 +215,7 @@
         const produtos = await carregarProdutos();
         tbProdutos.innerHTML = '';
         if (produtos.length === 0) {
-            tbProdutos.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#94a3b8; padding:30px;">Nenhum produto cadastrado</td></tr>';
+            tbProdutos.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#64748b; padding:30px;">Nenhum produto cadastrado</td></tr>';
             return;
         }
         produtos.forEach(p => {
@@ -254,8 +256,10 @@
                 datasets: [{
                     label: 'Total Vendido (R$)',
                     data: dados,
-                    backgroundColor: '#3b82f6',
-                    borderRadius: 8,
+                    backgroundColor: 'rgba(0, 240, 255, 0.7)',
+                    borderColor: '#00f0ff',
+                    borderWidth: 1,
+                    borderRadius: 6,
                 }]
             },
             options: {
@@ -267,7 +271,19 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            callback: value => 'R$ ' + value.toFixed(2)
+                            callback: value => 'R$ ' + value.toFixed(2),
+                            color: '#94a3b8'
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.04)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#94a3b8'
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.04)'
                         }
                     }
                 }
