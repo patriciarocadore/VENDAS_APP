@@ -2,167 +2,388 @@
 <html lang="pt-BR">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Controle de Vendas</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="style.css">
 
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+    <!-- Chart.js para gráficos estilo Power BI -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
 <div class="container">
 
-    <!-- SIDEBAR -->
-
+    <!-- ========== SIDEBAR ========== -->
     <aside class="sidebar">
-
         <div class="logo">
-
             <h2>VENDAS</h2>
-
             <span>Dashboard</span>
-
         </div>
 
         <nav>
-
             <ul>
-
-                <li class="active">
+                <li class="active" data-action="dashboard">
                     <span class="material-icons">dashboard</span>
                     Dashboard
                 </li>
-
-                <li>
+                <li data-action="produtos">
                     <span class="material-icons">inventory_2</span>
                     Produtos
                 </li>
-
-                <li>
+                <li data-action="clientes">
                     <span class="material-icons">groups</span>
                     Clientes
                 </li>
-
-                <li>
+                <li data-action="novaVenda">
                     <span class="material-icons">shopping_cart</span>
                     Nova Venda
                 </li>
-
-                <li>
+                <li data-action="relatorios">
                     <span class="material-icons">description</span>
                     Relatórios
                 </li>
-
             </ul>
-
         </nav>
-
     </aside>
 
-    <!-- MAIN -->
-
+    <!-- ========== MAIN ========== -->
     <main class="content">
 
+        <!-- HEADER -->
         <header>
-
             <div>
-
                 <h1>Controle de Vendas</h1>
-
                 <p>Sistema de Gestão Comercial</p>
-
             </div>
-
         </header>
 
-        <!-- CARDS -->
-
+        <!-- CARDS (resumo) -->
         <section class="cards">
-
             <div class="card">
-
                 <h3>Total Vendido</h3>
-
-                <span id="totalVendido">
-                    R$ 0,00
-                </span>
-
+                <span id="totalVendido">R$ 0,00</span>
             </div>
-
             <div class="card">
-
                 <h3>Quantidade de Vendas</h3>
-
-                <span id="qtdeVendas">
-                    0
-                </span>
-
+                <span id="qtdeVendas">0</span>
             </div>
-
             <div class="card">
-
                 <h3>Ticket Médio</h3>
-
-                <span id="ticketMedio">
-                    R$ 0,00
-                </span>
-
+                <span id="ticketMedio">R$ 0,00</span>
             </div>
-
         </section>
 
-        <!-- PRODUTOS -->
-
-        <section class="panel">
-
+        <!-- GRÁFICO (estilo Power BI) -->
+        <section class="panel" style="margin-top:20px;">
             <div class="panel-title">
+                <h2>Vendas por Mês</h2>
+            </div>
+            <canvas id="graficoVendas" height="100"></canvas>
+        </section>
 
+        <!-- TABELA DE PRODUTOS -->
+        <section class="panel" style="margin-top:20px;">
+            <div class="panel-title">
                 <h2>Produtos Cadastrados</h2>
-
-                <button onclick="carregarProdutos()">
-
-                    Atualizar
-
-                </button>
-
+                <div>
+                    <button onclick="abrirModalProduto()" style="margin-right:10px;">
+                        Novo Produto
+                    </button>
+                    <button onclick="carregarTabelaProdutos()">
+                        Atualizar
+                    </button>
+                </div>
             </div>
 
             <table>
-
                 <thead>
-
                     <tr>
-
                         <th>Código</th>
                         <th>Descrição</th>
                         <th>Valor</th>
-
                     </tr>
-
                 </thead>
-
                 <tbody id="tbProdutos">
-
+                    <!-- preenchido via JavaScript -->
                 </tbody>
-
             </table>
-
         </section>
 
     </main>
-
 </div>
 
-<script src="js/api.js"></script>
-<script src="js/app.js"></script>
+<!-- ============================================================
+     SCRIPTS (API + APP)
+     ============================================================ -->
+
+<!-- api.js – comunicação com o backend -->
+<script>
+    // =====================================================
+    // API.JS
+    // =====================================================
+
+    // Substitua pela URL do seu Web App implantado
+    const API_URL = 'https://script.google.com/macros/s/SEU_ID/exec';
+
+    async function apiGet(action) {
+        const url = `${API_URL}?action=${action}`;
+        const resp = await fetch(url);
+        const json = await resp.json();
+        return json;
+    }
+
+    async function apiPost(action, data) {
+        const url = `${API_URL}?action=${action}`;
+        const resp = await fetch(url, {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const json = await resp.json();
+        return json;
+    }
+
+    // --- Funções específicas ---
+
+    async function carregarProdutos() {
+        const result = await apiGet('produtos');
+        if (result.success) return result.data;
+        alert('Erro ao carregar produtos: ' + result.message);
+        return [];
+    }
+
+    async function carregarClientes() {
+        const result = await apiGet('clientes');
+        if (result.success) return result.data;
+        alert('Erro ao carregar clientes: ' + result.message);
+        return [];
+    }
+
+    async function carregarVendas() {
+        const result = await apiGet('vendas');
+        if (result.success) return result.data;
+        return [];
+    }
+
+    async function carregarResumo() {
+        const result = await apiGet('resumo');
+        if (result.success) return result.data;
+        console.error('Erro no resumo:', result.message);
+        return { totalVendido: 0, qtdeVendas: 0, ticketMedio: 0 };
+    }
+
+    async function salvarProduto(produto) {
+        const result = await apiPost('salvarProduto', produto);
+        return result;
+    }
+
+    async function salvarCliente(cliente) {
+        const result = await apiPost('salvarCliente', cliente);
+        return result;
+    }
+
+    async function registrarVenda(venda) {
+        const result = await apiPost('registrarVenda', venda);
+        return result;
+    }
+</script>
+
+<!-- app.js – lógica da interface -->
+<script>
+    // =====================================================
+    // APP.JS
+    // =====================================================
+
+    // Elementos DOM
+    const tbProdutos = document.getElementById('tbProdutos');
+    const totalVendidoEl = document.getElementById('totalVendido');
+    const qtdeVendasEl = document.getElementById('qtdeVendas');
+    const ticketMedioEl = document.getElementById('ticketMedio');
+
+    // --- Inicialização ---
+    document.addEventListener('DOMContentLoaded', async () => {
+        await atualizarDashboard();
+        await carregarGrafico();
+        configurarMenu();
+    });
+
+    // --- Atualiza tudo ---
+    async function atualizarDashboard() {
+        await Promise.all([
+            carregarTabelaProdutos(),
+            atualizarCards()
+        ]);
+    }
+
+    // --- Tabela Produtos ---
+    async function carregarTabelaProdutos() {
+        const produtos = await carregarProdutos();
+        tbProdutos.innerHTML = '';
+        if (produtos.length === 0) {
+            tbProdutos.innerHTML = '<tr><td colspan="3">Nenhum produto cadastrado</td></tr>';
+            return;
+        }
+        produtos.forEach(p => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${p.codigo}</td>
+                <td>${p.descricao}</td>
+                <td>R$ ${Number(p.valor).toFixed(2)}</td>
+            `;
+            tbProdutos.appendChild(tr);
+        });
+    }
+
+    // --- Cards de resumo ---
+    async function atualizarCards() {
+        const resumo = await carregarResumo();
+        totalVendidoEl.textContent = `R$ ${resumo.totalVendido.toFixed(2)}`;
+        qtdeVendasEl.textContent = resumo.qtdeVendas;
+        ticketMedioEl.textContent = `R$ ${resumo.ticketMedio.toFixed(2)}`;
+    }
+
+    // --- Gráfico (Chart.js) ---
+    async function carregarGrafico() {
+        const vendas = await carregarVendas();
+        // Agrupa por mês (YYYY-MM)
+        const meses = {};
+        vendas.forEach(v => {
+            if (v.data) {
+                const mes = v.data.substring(0, 7); // "2025-03"
+                meses[mes] = (meses[mes] || 0) + v.total;
+            }
+        });
+        const labels = Object.keys(meses).sort();
+        const dados = labels.map(m => meses[m]);
+
+        const ctx = document.getElementById('graficoVendas').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total Vendido (R$)',
+                    data: dados,
+                    backgroundColor: '#1976d2',
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: value => 'R$ ' + value.toFixed(2)
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // --- Modal para Novo Produto (usando prompt simples) ---
+    window.abrirModalProduto = function() {
+        const codigo = prompt('Código do produto (deixe em branco para novo):');
+        const descricao = prompt('Descrição:');
+        const valor = prompt('Valor (ex: 19.90):');
+        if (descricao && valor) {
+            salvarProduto({ codigo: codigo || '', descricao, valor: parseFloat(valor) })
+                .then(result => {
+                    alert(result.data.mensagem || 'Produto salvo');
+                    carregarTabelaProdutos();
+                })
+                .catch(err => alert('Erro: ' + err));
+        }
+    };
+
+    // --- Modal para Nova Venda ---
+    window.abrirModalVenda = async function() {
+        const clientes = await carregarClientes();
+        if (clientes.length === 0) {
+            alert('Cadastre clientes primeiro.');
+            return;
+        }
+        const cliente = prompt('Digite o código do cliente (ex: CLT-001):');
+        if (!cliente) return;
+
+        const itens = [];
+        let continuar = true;
+        while (continuar) {
+            const codProd = prompt('Código do produto (ou cancelar para finalizar):');
+            if (!codProd) break;
+            const qtd = parseInt(prompt('Quantidade:'), 10);
+            if (isNaN(qtd) || qtd <= 0) {
+                alert('Quantidade inválida.');
+                continue;
+            }
+            itens.push({ codigoProduto: codProd, quantidade: qtd });
+            continuar = confirm('Adicionar mais um item?');
+        }
+
+        if (itens.length === 0) {
+            alert('Venda sem itens.');
+            return;
+        }
+
+        const venda = { cliente, itens };
+        const result = await registrarVenda(venda);
+        if (result.success) {
+            alert(`Venda registrada! Total: R$ ${result.data.total.toFixed(2)}`);
+            await atualizarDashboard();
+            await carregarGrafico(); // recarrega o gráfico
+        } else {
+            alert('Erro: ' + result.message);
+        }
+    };
+
+    // --- Configuração dos cliques no menu lateral ---
+    function configurarMenu() {
+        const menuItems = document.querySelectorAll('.sidebar li');
+        menuItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active de todos
+                menuItems.forEach(li => li.classList.remove('active'));
+                this.classList.add('active');
+
+                const action = this.dataset.action;
+                switch (action) {
+                    case 'produtos':
+                        abrirModalProduto();
+                        break;
+                    case 'novaVenda':
+                        abrirModalVenda();
+                        break;
+                    case 'dashboard':
+                        // apenas recarrega os dados
+                        atualizarDashboard();
+                        carregarGrafico();
+                        break;
+                    case 'clientes':
+                        // futuramente abrir modal de clientes
+                        alert('Funcionalidade de clientes em breve.');
+                        break;
+                    case 'relatorios':
+                        alert('Relatórios em desenvolvimento.');
+                        break;
+                    default:
+                        break;
+                }
+            });
+        });
+    }
+</script>
 
 </body>
-
 </html>
