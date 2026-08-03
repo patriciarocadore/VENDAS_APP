@@ -3,145 +3,155 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>⚡ VENDAS DASH</title>
+    <title>VENDAS · Dashboard</title>
 
-    <!-- Google Fonts (Inter) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Google Fonts (Orbitron para high-tech) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- CSS -->
+
+    <!-- CSS principal -->
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-    <div class="app-container">
+<div class="app">
 
-        <!-- ========== SIDEBAR (flutuante com glass) ========== -->
-        <aside class="sidebar-glass">
-            <div class="logo-neon">
-                <span class="material-icons">bolt</span>
-                <h2>VENDAS</h2>
-                <span class="badge">DASH</span>
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar">
+        <div class="logo">
+            <span class="material-icons">bolt</span>
+            <h1>VENDAS</h1>
+            <span class="version">v2.0</span>
+        </div>
+
+        <nav>
+            <ul>
+                <li class="active" data-action="dashboard">
+                    <span class="material-icons">dashboard</span>
+                    <span>Dashboard</span>
+                </li>
+                <li data-action="produtos">
+                    <span class="material-icons">inventory_2</span>
+                    <span>Produtos</span>
+                </li>
+                <li data-action="clientes">
+                    <span class="material-icons">groups</span>
+                    <span>Clientes</span>
+                </li>
+                <li data-action="novaVenda">
+                    <span class="material-icons">shopping_cart</span>
+                    <span>Nova Venda</span>
+                </li>
+                <li data-action="relatorios">
+                    <span class="material-icons">description</span>
+                    <span>Relatórios</span>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <span class="material-icons">power_settings_new</span>
+            <span>Sair</span>
+        </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <main class="content">
+
+        <!-- HEADER -->
+        <header>
+            <div class="header-left">
+                <h1>Controle de Vendas</h1>
+                <p>Sistema de Gestão Comercial</p>
             </div>
-            <nav class="menu-nav">
-                <ul>
-                    <li class="active" data-action="dashboard">
-                        <span class="material-icons">dashboard</span>
-                        <span>Dashboard</span>
-                    </li>
-                    <li data-action="produtos">
-                        <span class="material-icons">inventory_2</span>
-                        <span>Produtos</span>
-                    </li>
-                    <li data-action="clientes">
-                        <span class="material-icons">groups</span>
-                        <span>Clientes</span>
-                    </li>
-                    <li data-action="novaVenda">
-                        <span class="material-icons">shopping_cart</span>
-                        <span>Nova Venda</span>
-                    </li>
-                    <li data-action="relatorios">
-                        <span class="material-icons">description</span>
-                        <span>Relatórios</span>
-                    </li>
-                </ul>
-            </nav>
-            <div class="sidebar-footer">
-                <span class="material-icons">settings</span>
-                <span class="version">v2.0</span>
+            <div class="header-right">
+                <button class="btn-primary" onclick="abrirModalVenda()">
+                    <span class="material-icons">add</span> Nova Venda
+                </button>
+                <span class="date-display" id="dataAtual"></span>
             </div>
-        </aside>
+        </header>
 
-        <!-- ========== MAIN CONTENT ========== -->
-        <main class="main-content">
-
-            <!-- HEADER com gradiente -->
-            <header class="header-glow">
-                <div>
-                    <h1>📊 <span class="highlight">Controle</span> de Vendas</h1>
-                    <p class="subtitle">Sistema de Gestão Comercial • <span id="dataAtual"></span></p>
+        <!-- CARDS (KPI) -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background:#4f46e5;">
+                    <span class="material-icons">attach_money</span>
                 </div>
-                <div class="header-actions">
-                    <button class="btn-glow" onclick="abrirModalVenda()">
-                        <span class="material-icons">add</span> Nova Venda
+                <div class="kpi-info">
+                    <span class="kpi-label">Total Vendido</span>
+                    <span class="kpi-value" id="totalVendido">R$ 0,00</span>
+                </div>
+                <div class="kpi-trend up">▲ 12%</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background:#0ea5e9;">
+                    <span class="material-icons">shopping_bag</span>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Quantidade de Vendas</span>
+                    <span class="kpi-value" id="qtdeVendas">0</span>
+                </div>
+                <div class="kpi-trend up">▲ 8%</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon" style="background:#8b5cf6;">
+                    <span class="material-icons">trending_up</span>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Ticket Médio</span>
+                    <span class="kpi-value" id="ticketMedio">R$ 0,00</span>
+                </div>
+                <div class="kpi-trend down">▼ 2%</div>
+            </div>
+        </section>
+
+        <!-- GRÁFICO + TABELA (dois painéis lado a lado) -->
+        <section class="dual-panel">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2><span class="material-icons">bar_chart</span> Vendas por Mês</h2>
+                </div>
+                <canvas id="graficoVendas" height="200"></canvas>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2><span class="material-icons">inventory</span> Produtos Cadastrados</h2>
+                    <button class="btn-outline" onclick="carregarTabelaProdutos()">
+                        <span class="material-icons">refresh</span> Atualizar
                     </button>
                 </div>
-            </header>
-
-            <!-- CARDS (com gradiente neon) -->
-            <section class="cards-grid">
-                <div class="card-neon card-total">
-                    <div class="card-icon"><span class="material-icons">attach_money</span></div>
-                    <div>
-                        <h3>Total Vendido</h3>
-                        <span id="totalVendido" class="valor">R$ 0,00</span>
-                    </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbProdutos">
+                            <tr><td colspan="3" style="text-align:center;">Carregando...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="card-neon card-qtd">
-                    <div class="card-icon"><span class="material-icons">shopping_bag</span></div>
-                    <div>
-                        <h3>Quantidade de Vendas</h3>
-                        <span id="qtdeVendas" class="valor">0</span>
-                    </div>
-                </div>
-                <div class="card-neon card-ticket">
-                    <div class="card-icon"><span class="material-icons">trending_up</span></div>
-                    <div>
-                        <h3>Ticket Médio</h3>
-                        <span id="ticketMedio" class="valor">R$ 0,00</span>
-                    </div>
-                </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- GRÁFICO + TABELA em grid 2 colunas -->
-            <section class="dashboard-grid">
-                <!-- Gráfico -->
-                <div class="panel-glass">
-                    <div class="panel-header">
-                        <h2><span class="material-icons">show_chart</span> Vendas por Mês</h2>
-                    </div>
-                    <div class="chart-wrapper">
-                        <canvas id="graficoVendas"></canvas>
-                    </div>
-                </div>
+    </main>
+</div>
 
-                <!-- Tabela de Produtos -->
-                <div class="panel-glass">
-                    <div class="panel-header">
-                        <h2><span class="material-icons">list_alt</span> Produtos</h2>
-                        <div>
-                            <button class="btn-small-glow" onclick="abrirModalProduto()">
-                                <span class="material-icons">add</span> Novo
-                            </button>
-                            <button class="btn-small-glow" onclick="carregarTabelaProdutos()">
-                                <span class="material-icons">refresh</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Código</th>
-                                    <th>Descrição</th>
-                                    <th>Valor</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbProdutos">
-                                <!-- preenchido via JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-    </div>
-
-    <!-- ========== SCRIPTS ========== -->
-    <script src="script.js"></script>
+<!-- ========== SCRIPTS ========== -->
+<script src="script.js"></script>
 </body>
 </html>
