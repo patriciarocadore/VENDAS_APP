@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Controle de Vendas</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <h2>VENDAS</h2>
+
+            <span>Dashboard</span>
+
+        </div>
+
+        <nav>
+
+            <ul>
+
+                <li class="active">
+                    <span class="material-icons">dashboard</span>
+                    Dashboard
+                </li>
+
+                <li>
+                    <span class="material-icons">inventory_2</span>
+                    Produtos
+                </li>
+
+                <li>
+                    <span class="material-icons">groups</span>
+                    Clientes
+                </li>
+
+                <li>
+                    <span class="material-icons">shopping_cart</span>
+                    Nova Venda
+                </li>
+
+                <li>
+                    <span class="material-icons">description</span>
+                    Relatórios
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <main class="content">
+
+        <header>
+
+            <div>
+
+                <h1>Controle de Vendas</h1>
+
+                <p>Sistema de Gestão Comercial</p>
+
+            </div>
+
+        </header>
+
+        <!-- CARDS -->
+
+        <section class="cards">
+
+            <div class="card">
+
+                <h3>Total Vendido</h3>
+
+                <span id="totalVendido">
+                    R$ 0,00
+                </span>
+
+            </div>
+
+            <div class="card">
+
+                <h3>Quantidade de Vendas</h3>
+
+                <span id="qtdeVendas">
+                    0
+                </span>
+
+            </div>
+
+            <div class="card">
+
+                <h3>Ticket Médio</h3>
+
+                <span id="ticketMedio">
+                    R$ 0,00
+                </span>
+
+            </div>
+
+        </section>
+
+        <!-- PRODUTOS -->
+
+        <section class="panel">
+
+            <div class="panel-title">
+
+                <h2>Produtos Cadastrados</h2>
+
+                <button onclick="carregarProdutos()">
+
+                    Atualizar
+
+                </button>
+
+            </div>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Código</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tbProdutos">
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+
+</html>
