@@ -1,23 +1,20 @@
-// ============================================================
-// APP.JS – Lógica da interface
-// ============================================================
+// =====================================================
+// APP.JS - Lógica da interface e manipulação do DOM
+// =====================================================
 
 const tbProdutos = document.getElementById('tbProdutos');
 const totalVendidoEl = document.getElementById('totalVendido');
 const qtdeVendasEl = document.getElementById('qtdeVendas');
 const ticketMedioEl = document.getElementById('ticketMedio');
-const produtosAtivosEl = document.getElementById('produtosAtivos');
 
-let graficoInstance = null;
-
-// ---------- Inicialização ----------
+// --- Inicialização ---
 document.addEventListener('DOMContentLoaded', async () => {
     await atualizarDashboard();
     await carregarGrafico();
     configurarMenu();
 });
 
-// ---------- Atualiza tudo ----------
+// --- Atualiza tudo ---
 async function atualizarDashboard() {
     await Promise.all([
         carregarTabelaProdutos(),
@@ -25,28 +22,26 @@ async function atualizarDashboard() {
     ]);
 }
 
-// ---------- Tabela Produtos ----------
+// --- Tabela Produtos ---
 async function carregarTabelaProdutos() {
     const produtos = await carregarProdutos();
     tbProdutos.innerHTML = '';
     if (produtos.length === 0) {
-        tbProdutos.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:32px; color:#94a3b8;">Nenhum produto cadastrado</td></tr>`;
+        tbProdutos.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#94a3b8; padding:30px;">Nenhum produto cadastrado</td></tr>';
         return;
     }
     produtos.forEach(p => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td>${p.codigo}</td>
+            <td><strong>${p.codigo}</strong></td>
             <td>${p.descricao}</td>
             <td>R$ ${Number(p.valor).toFixed(2)}</td>
         `;
         tbProdutos.appendChild(tr);
     });
-    // Atualiza contagem de produtos ativos (todos os produtos)
-    produtosAtivosEl.textContent = produtos.length;
 }
 
-// ---------- Cards KPI ----------
+// --- Cards de resumo ---
 async function atualizarCards() {
     const resumo = await carregarResumo();
     totalVendidoEl.textContent = `R$ ${resumo.totalVendido.toFixed(2)}`;
@@ -54,7 +49,7 @@ async function atualizarCards() {
     ticketMedioEl.textContent = `R$ ${resumo.ticketMedio.toFixed(2)}`;
 }
 
-// ---------- Gráfico (Chart.js) ----------
+// --- Gráfico ---
 async function carregarGrafico() {
     const vendas = await carregarVendas();
     const meses = {};
@@ -68,27 +63,19 @@ async function carregarGrafico() {
     const dados = labels.map(m => meses[m]);
 
     const ctx = document.getElementById('graficoVendas').getContext('2d');
-
-    // Destroi gráfico anterior se existir
-    if (graficoInstance) {
-        graficoInstance.destroy();
-    }
-
-    graficoInstance = new Chart(ctx, {
+    new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: labels.length ? labels : ['Sem dados'],
+            labels: labels,
             datasets: [{
                 label: 'Total Vendido (R$)',
-                data: dados.length ? dados : [0],
+                data: dados,
                 backgroundColor: '#3b82f6',
                 borderRadius: 8,
-                barPercentage: 0.6,
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
             plugins: {
                 legend: { display: false }
             },
@@ -104,8 +91,7 @@ async function carregarGrafico() {
     });
 }
 
-// ===== FUNÇÕES DOS BOTÕES (expostas globalmente) =====
-
+// ===== FUNÇÕES DOS BOTÕES =====
 window.abrirModalProduto = function() {
     const codigo = prompt('Código do produto (deixe em branco para novo):');
     const descricao = prompt('Descrição:');
@@ -159,7 +145,6 @@ window.abrirModalVenda = async function() {
     }
 };
 
-// ---------- Menu (sidebar) ----------
 function configurarMenu() {
     const menuItems = document.querySelectorAll('.sidebar li');
     menuItems.forEach(item => {
