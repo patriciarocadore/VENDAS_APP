@@ -1,10 +1,9 @@
-// ============================================================
-// API.JS – Comunicação com o backend Apps Script
-// ============================================================
+// =====================================================
+// API.JS - Comunicação com o backend Apps Script
+// =====================================================
 
 const API_URL = 'https://script.google.com/macros/s/AKfycbwxSuwh7_bROneK8DLSc0c5vE94CtZXfnoUf6PdMapyMRLoUh47JUlSMpwAUT_fASLg/exec';
 
-// ---------- GET ----------
 async function apiGet(action) {
     const url = `${API_URL}?action=${action}`;
     const resp = await fetch(url);
@@ -12,7 +11,6 @@ async function apiGet(action) {
     return json;
 }
 
-// ---------- POST ----------
 async function apiPost(action, data) {
     const url = `${API_URL}?action=${action}`;
     const resp = await fetch(url, {
@@ -25,18 +23,19 @@ async function apiPost(action, data) {
     return json;
 }
 
-// ---------- Endpoints ----------
+// --- Funções específicas ---
+
 async function carregarProdutos() {
     const result = await apiGet('produtos');
     if (result.success) return result.data;
-    console.error('Erro produtos:', result.message);
+    alert('Erro ao carregar produtos: ' + result.message);
     return [];
 }
 
 async function carregarClientes() {
     const result = await apiGet('clientes');
     if (result.success) return result.data;
-    console.error('Erro clientes:', result.message);
+    alert('Erro ao carregar clientes: ' + result.message);
     return [];
 }
 
@@ -49,7 +48,7 @@ async function carregarVendas() {
 async function carregarResumo() {
     const result = await apiGet('resumo');
     if (result.success) return result.data;
-    console.error('Erro resumo:', result.message);
+    console.error('Erro no resumo:', result.message);
     return { totalVendido: 0, qtdeVendas: 0, ticketMedio: 0 };
 }
 
